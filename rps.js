@@ -162,7 +162,6 @@ function readHighscoreFromFile() {
 
 function saveHighscore(player) {
     let playerName = prompt(`Please enter a ${ansi.green(`Name`)}: `);
-    console.log();
     player.name = playerName;
 
     updateHighscore(player);
