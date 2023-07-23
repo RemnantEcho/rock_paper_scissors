@@ -14,11 +14,12 @@ class Player {
     }
 
     printScore() {
-        console.log(ansi.yellow(`${this.name} | ${this.score}`));
+        console.log(ansi.yellow(`${this.name}'s current score is ${this.score}`));
     }
 }
 
 let highscore = [];
+let limit = 10;
 
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -78,7 +79,7 @@ function mergeSort(arr, l, r) {
     merge(arr, l, m, r);
 }
 
-function updateHighscore(player) {
+function updateHighscore(player) { 
     if (highscore.length == 0) {
         highscore.push(player);
         viewHighscore(0);
@@ -101,6 +102,10 @@ function updateHighscore(player) {
         }
     }
 
+    if (hIndex < 10 && hIndex != -1) {
+        highscore.push(player);
+    }
+    
     // console.log("Index: " + hIndex);
 
     // Top 10
@@ -127,14 +132,17 @@ function updateHighscore(player) {
     // highscore = tempArray;
     //mergeSort(highscore, 0, highscore.length);
 
+    if (highscore.length >= limit) {
+        highscore.splice(limit, highscore.length - limit);
+    }
+
     viewHighscore(hIndex);
 
 }
 
 function saveHighscoreToFile() {
     let jsonData = JSON.stringify(highscore);
-    console.log(jsonData);
-    try {3
+    try {
         fs.writeFileSync(scoreFilePath, jsonData, 'utf8', function writeFileCallback(err) {
             if (err) throw ansi.redBright(err);
             // console.log(ansi.yellowBright(`Your Highscores has been saved!`));
@@ -288,6 +296,7 @@ function selectMenu(input) {
 
 function compareChoices(p, c, player, computer) {
     let compString = "";
+    p = p.toLowerCase();
 
     switch(c) {
         case 0:
@@ -331,8 +340,8 @@ function compareChoices(p, c, player, computer) {
 }
 
 function playTheGame() {
-    let player = new Player("player", 0);
-    let computer = new Player("computer", 0);
+    let player = new Player("Player", 0);
+    let computer = new Player("Computer", 0);
 
     let skipLogic;
 
@@ -348,7 +357,7 @@ function playTheGame() {
         console.log(`${ansi.yellowBright(`Or`)} Enter ${ansi.cyanBright(`c`)} to view current ${ansi.cyanBright.bold('Score')} or ${ansi.cyanBright(`q`)} to ${ansi.cyanBright.bold('Quit')}\n`);
 
         let playerChoice = prompt(`Please enter a correct input: `);
-    
+
         while(checkValidGameInput(playerChoice) == false) {
             console.log();
 
@@ -374,7 +383,7 @@ function playTheGame() {
             
             playerChoice = prompt(`Please enter a correct input: `);
         }
-        
+
         if (!skipLogic) {
             let computerChoice = getRandomNumber(0, 2);
         
